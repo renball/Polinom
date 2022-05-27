@@ -3,332 +3,451 @@
 #include "..\Polinom\TList.h"
 #include "..\Polinom\TPolinom.h"
 
-TEST(TMonom, CREATE_MONOM)
+TEST(TList, CanCreateNewList)
 {
-	ASSERT_NO_THROW(TMonom mon);
+	ASSERT_NO_THROW(TList<int> t);
 }
 
-TEST(TPolinom, CREATE_POLINOM)
+TEST(TList, NewCreatedListIsEmpty)
 {
-	ASSERT_NO_THROW(TPolinom pol);
+	TList<int> t;
+	ASSERT_TRUE(t.IsEmpty());
 }
 
-TEST(TPolinom, COPY_POLINOM)
+TEST(TList, NotEmptyListIsNotEmpty)
 {
-	TPolinom pol;
-	pol.AddMonom(TMonom(1, 1, 1, 1));
-	TPolinom n_pol(pol);
-	EXPECT_TRUE(pol == n_pol);
-}
-TEST(TPolinom, CORRECT_COEFF)
-{
-	TPolinom pol0;
-	TMonom mon0(1, 1, 1, 1);
-	TMonom mon1(2, 2, 2, 2);
-	pol0.AddMonom(mon0);
-	pol0.AddMonom(mon1);
-	TPolinom pol1;
-	TMonom mon2(2, 1, 1, 1);
-	TMonom mon3(4, 2, 2, 2);
-	pol1.AddMonom(mon2);
-	pol1.AddMonom(mon3);
-	EXPECT_TRUE((pol0 * 2) == pol1);
-}
-TEST(TPolinom, ASSIGN_POLINOM)
-{
-	TPolinom pol0;
-	TMonom mon0(1, 1, 1, 1);
-	pol0.AddMonom(mon0);
-	TPolinom pol1 = pol0;
-	EXPECT_TRUE(pol0 == pol1);
+	TList<int> t;
+	t.InsFirst(10);
+
+	ASSERT_TRUE(!t.IsEmpty());
+	ASSERT_TRUE(t.IsNotEmpty());
 }
 
-TEST(TPolinom, ASSIGN_POLINOM_TO_ITSELF)
+TEST(TList, CanInsertFirstElement)
 {
-	TPolinom pol;
+	TList<int> t;
+	ASSERT_NO_THROW(t.InsFirst(1));
+}
+
+TEST(TList, CanInsertLastElement)
+{
+	TList<int> t;
+	t.InsFirst(1);
+	ASSERT_NO_THROW(t.InsLast(2));
+}
+
+TEST(TList, CanInsertCurrentElementWhenFirst)
+{
+	TList<int> t;
+	t.InsFirst(1); t.InsFirst(2);
+	t.InsFirst(3); t.InsFirst(4);
+
+	t.Reset();
+	ASSERT_NO_THROW(t.InsCurr(100));
+}
+
+TEST(TList, CanInsertCurrentElementWhenSecond)
+{
+	TList<int> t;
+	t.InsFirst(1); t.InsFirst(2);
+	t.InsFirst(3); t.InsFirst(4);
+
+	t.Reset(); t.GoNext();
+	ASSERT_NO_THROW(t.InsCurr(100));
+}
+
+TEST(TList, CanInsertCurrentElementWhenPenultimate)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+	t.GoNext(); t.GoNext();
+	t.GoNext();
+
+	ASSERT_NO_THROW(t.InsCurr(100));
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanInsertCurrentElementWhenLast)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+	t.GoNext(); t.GoNext();
+	t.GoNext(); t.GoNext();
+
+	ASSERT_NO_THROW(t.InsCurr(100));
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanDeleteFirstElement)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	ASSERT_NO_THROW(t.DelFirst());
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanDelete2CurrentElementsWhenFirst)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+
+	ASSERT_NO_THROW(t.DelCurr());
+	ASSERT_NO_THROW(t.DelCurr());
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanDeleteCurrentElementWhenSecond)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+	t.GoNext();
+
+	ASSERT_NO_THROW(t.DelCurr());
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanDeleteCurrentElementWhenPenultimate)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+	t.GoNext(); t.GoNext();
+
+	ASSERT_NO_THROW(t.DelCurr());
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TList, CanDeleteCurrentElementWhenLast)
+{
+	TList<int> t;
+	t.InsLast(1); t.InsLast(2);
+	t.InsLast(3); t.InsLast(4);
+
+	t.Reset();
+	t.GoNext(); t.GoNext();
+	t.GoNext();
+
+	ASSERT_NO_THROW(t.DelCurr());
+
+	std::cout << "\t     " << t << '\n';
+}
+
+TEST(TPolinom, CanCreateNewPolynom)
+{
+	ASSERT_NO_THROW(TPolynom t);
+}
+
+TEST(TPolinom, CanCreatePolynomFromString)
+{
+	TPolinom t("2xyz+0.5xz");
+
+	TPolinom correct;
+	correct.AddMonom(2, 1, 1, 1);
+	correct.AddMonom(0.5, 1, 0, 1);
+
+	EXPECT_EQ(t, correct);
+}
+
+TEST(TPolinom, NewCreatedPolynomIsZero)
+{
+	TPolinom t;
+	ASSERT_EQ(t.ToStr(), "0");
+}
+
+TEST(TPolinom, CanCreateCopiedPolynom)
+{
+	TPolinom t;
+	ASSERT_NO_THROW(TPolinom t2(t));
+}
+
+TEST(TPolinom, CanAssignPolynoms)
+{
+	TPolinom t1;
+	t1.AddMonom(2, 0, 0, 0);
+
+	TPolinom t2;
+
+	ASSERT_NO_THROW(t2 = t1);
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = t1 = " << t2 << '\n';
+	EXPECT_EQ(t1.ToStr(), t2.ToStr());
+}
+
+TEST(TPolinom, CanAssignPolynomToItself)
+{
+	TPolinom t;
+	t.AddMonom(2, 0, 0, 0);
+
+	ASSERT_NO_THROW(t = t);
+	std::cout << "\t     t = " << t << '\n';
+	EXPECT_EQ(t.ToStr(), t.ToStr());
+}
+
+TEST(TPolinom, CanAddMonomToPolynom)
+{
+	TPolinom t;
 	TMonom mon(1, 1, 1, 1);
-	pol.AddMonom(mon);
-	ASSERT_NO_THROW(pol = pol);
-	EXPECT_TRUE(pol == pol);
-}
-TEST(TPolinom, ASSIGNEP_POLINOM_IS_EQUAL)
-{
-	bool result = true;
-	TPolinom pol0;
-	TMonom mon0(1, 1, 1, 1);
-	TMonom mon1(2, 2, 2, 2);
-	pol0.AddMonom(mon0);
-	pol0.AddMonom(mon1);
-	TPolinom pol1;
-	pol1 = pol0;
-	EXPECT_TRUE(pol0 == pol1);
-}
-TEST(TPolinom, CAN_ADD_MONOM_TO_POLINOM)
-{
-	TPolinom pol;
-	TMonom mon(1, 1, 1, 1);
-	ASSERT_NO_THROW(pol.AddMonom(mon));
-}
-TEST(TPolinom, CORRECT_ADD_POLINOM_TO_POLINOM)
-{
-	TPolinom pol0;
-	TMonom mon0(2, 1, 1, 1);
-
-	TMonom mon1(1, 1, 1, 1);
-	TMonom mon2(1, 2, 2, 2);
-
-
-	pol0.AddMonom(mon1);
-	pol0.AddMonom(mon2);
-
-	TPolinom pol1;
-
-	pol1.AddMonom(mon0);
-	pol1.AddMonom(mon2);
-
-	TPolinom pol_res;
-	TMonom mon3(3, 1, 1, 1);
-	TMonom mon4(2, 2, 2, 2);
-	pol_res.AddMonom(mon4);
-	pol_res.AddMonom(mon3);
-
-	EXPECT_TRUE((pol0+pol1) == pol_res);
-}
-TEST(TPolinom, CORRECT_ADD_POLINOM_TO_POLINOM_2)
-{
-	TPolinom pol0;
-	TMonom mon1(2, 1, 1, 1);
-	TMonom mon1_1(1, 1, 1, 1);
-
-	TMonom mon2(1, 2, 2, 2);
-	TMonom mon2_2(5, 2, 2, 2);
-
-	TMonom mon3(3, 3, 3, 3);
-	TMonom mon3_3(-3, 3, 3, 3);
-
-	pol0.AddMonom(mon1);
-	pol0.AddMonom(mon2);
-	pol0.AddMonom(mon3);
-
-	TPolinom pol1;
-
-	pol1.AddMonom(mon1);
-	pol1.AddMonom(mon2_2);
-	pol1.AddMonom(mon3_3);
-
-	TPolinom pol_res;
-
-	TMonom pol3(6, 2, 2, 2);
-	
-	pol_res.AddMonom(mon1);
-	pol_res.AddMonom(pol3);
-
-
-	EXPECT_TRUE((pol0 + pol1) == pol_res);
-}
-TEST(TPolinom, CORRECT_ADD_POLINOM_TO_POLINOM_3)
-{
-	TPolinom pol0;
-	TMonom mon0(-1, 1, 1, 1);
-
-	TMonom mon1(1, 1, 1, 1);
-	TMonom mon2(1, 2, 2, 2);
-	TMonom mon2_2(5, 2, 2, 2);
-	TMonom mon3(3, 3, 3, 3);
-	TMonom mon3_3(2, 3, 3, 3);
-
-
-	pol0.AddMonom(mon0);
-	pol0.AddMonom(mon2);
-	pol0.AddMonom(mon3);
-
-	TPolinom pol1;
-
-	pol1.AddMonom(mon1);
-	pol1.AddMonom(mon2_2);
-	pol1.AddMonom(mon3_3);
-
-	TPolinom pol_res;
-
-	TMonom mon4(6, 2, 2, 2);
-	TMonom mon5(5, 3, 3, 3);
-
-	pol_res.AddMonom(mon4);
-	pol_res.AddMonom(mon5);
-
-
-	EXPECT_TRUE((pol0 + pol1) == pol_res);
-}
-TEST(TPolinom, CORRECT_ADD_POLINOM_TO_POLINOM_4)
-{
-	TPolinom pol0;
-	TMonom mon(2, 1, 1, 1);
-
-	TMonom mon1(1, 1, 1, 1);
-	TMonom mon2(-5, 2, 2, 2);
-	TMonom mon2_2(5, 2, 2, 2);
-	TMonom mon3(3, 3, 3, 3);
-	TMonom mon3_3(2, 3, 3, 3);
-
-	TMonom mon4(6, 2, 2, 2);
-	TMonom mon5(5, 3, 3, 3);
-
-
-	pol0.AddMonom(mon);
-	pol0.AddMonom(mon2);
-	pol0.AddMonom(mon3);
-
-	TPolinom pol1;
-
-	pol1.AddMonom(mon1);
-	pol1.AddMonom(mon2_2);
-	pol1.AddMonom(mon3_3);
-
-	TPolinom pol_res;
-
-	pol_res.AddMonom(mon);
-	pol_res.AddMonom(mon5);
-
-
-	EXPECT_TRUE((pol0 + pol1) == pol_res);
-}
-TEST(TPolinom, CAN_MULTIPLY_MONOM_BY_POLINOM)
-{
-	TPolinom pol;
-
-	TMonom mon(4, 3, 2, 1);
-
-	TMonom mon1(1, 1, 1, 1);
-	TMonom mon2(2, 2, 2, 2);
-	pol.AddMonom(mon1);
-	pol.AddMonom(mon2);
-
-
-	TPolinom pol_res;
-	TMonom mon3(8, 5, 4, 3);
-	TMonom mon4(4, 4, 3, 2);
-	pol_res.AddMonom(mon3);
-	pol_res.AddMonom(mon4);
-
-	EXPECT_TRUE(pol*mon == pol_res);
-}
-TEST(TPolinom, CAN_MULTIPLY_POLINOMS)
-{
-	TPolinom pol0;
-	TMonom mon1(2, 2, 3, 3);
-	TMonom mon2(4, 4, 4, 4);
-	pol0.AddMonom(mon1);
-	pol0.AddMonom(mon2);
-
-	TMonom mon3(4, 1, 2, 2);
-	TMonom mon4(1, 3, 2, 5);
-	TPolinom pol1;
-	TPolinom pol_res;
-	pol1.AddMonom(mon3);
-	pol1.AddMonom(mon4);
-	TMonom mon_1_1(4, 7, 6, 9);
-	TMonom mon_1_2(2, 5, 5, 8);
-	TMonom mon_1_3(8, 3, 5, 5);
-	pol_res.AddMonom(mon_1_1);
-	pol_res.AddMonom(mon_1_2);
-	pol_res.AddMonom(mon_1_3);
-	
-
-	EXPECT_TRUE(pol0 * pol1 == pol_res);
+	ASSERT_NO_THROW(t.AddMonom(mon));
+	std::cout << "\t     t = " << t << '\n';
 }
 
-TEST(TList, CAN_CREATE_LIST)
+TEST(TPolinom, CanAddPolynomToPolynom_1)
 {
-	ASSERT_NO_THROW(TList<int> list);
+	TPolinom t1;
+	TMonom mon1(1, 1, 0, 0);
+	t1.AddMonom(mon1);
+	TMonom mon2(1, 1, 0, 0);
+	t1.AddMonom(mon2);
+
+	TPolinom t2;
+	TMonom mon3(-1, 1, 0, 0);
+	t2.AddMonom(mon3);
+
+	TMonom mon3(-1, 0, 0, 0);
+	t2.AddMonom(mon3);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolinom sum;
+	ASSERT_NO_THROW(sum = t1 + t2);
+
+	std::cout << "\t     t1 + t2 = " << sum << '\n';
+
+	TPolinom correct;
+
+	EXPECT_EQ(sum, correct);
 }
 
-TEST(TList, NEW_LIST_IS_EMPTY)
+TEST(TPolynom, CanAddPolynomToPolynom_2)
 {
-	TList<int> list;
-	ASSERT_TRUE(list.IsEmpty());
+	TPolinom t1;
+	t1.AddMonom(1, 1, 0, 0);
+	t1.AddMonom(1, 0, 0, 0);
+
+	TPolinom t2;
+	t2.AddMonom(-1, 1, 0, 0);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolinom sum;
+	ASSERT_NO_THROW(sum = t1 + t2);
+
+	std::cout << "\t     t1 + t2 = " << sum << '\n';
+
+	TPolinom correct;
+	correct.AddMonom(1, 0, 0, 0);
+
+	EXPECT_EQ(sum, correct);
 }
 
-TEST(TList, LIST_WITH_ELEMENTS_IS_NOT_EMPTY)
+TEST(TPolynom, CanAddPolynomToPolynom_3)
 {
-	TList<int> list;
-	list.InsFirst(1);
-	ASSERT_TRUE(!list.IsEmpty());
+	TPolynom t1;
+	t1.AddMonom(1, 1, 0, 0);
+	t1.AddMonom(1, 0, 0, 0);
+
+	TPolynom t2;
+	t2.AddMonom(-1, 0, 0, 0);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolynom sum;
+	ASSERT_NO_THROW(sum = t1 + t2);
+
+	std::cout << "\t     t1 + t2 = " << sum << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(1, 1, 0, 0);
+
+	EXPECT_EQ(sum, correct);
 }
 
-TEST(TList, CAN_INSERT_FIRST)
+TEST(TPolynom, CanAddPolynomToPolynom_4)
 {
-	TList<int> list;
-	ASSERT_NO_THROW(list.InsFirst(1));
+	TPolynom t1;
+	t1.AddMonom(1, 0, 1, 1);
+	t1.AddMonom(2, 1, 0, 1);
+	t1.AddMonom(3, 1, 1, 1);
+
+	TPolynom t2;
+	t2.AddMonom(1, 0, 1, 1);
+	t2.AddMonom(-2, 1, 0, 1);
+	t2.AddMonom(3, 1, 1, 1);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolynom sum;
+	ASSERT_NO_THROW(sum = t1 + t2);
+
+	std::cout << "\t     t1 + t2 = " << sum << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(6, 1, 1, 1);
+	correct.AddMonom(2, 0, 1, 1);
+
+	EXPECT_EQ(sum, correct);
 }
 
-TEST(TList, CAN_DELETE_FIRST)
+TEST(TPolynom, CanAddPolynomToPolynom_5)
 {
-	TList<int> list;
-	list.InsLast(1); list.InsLast(2);
-	list.InsLast(3); list.InsLast(4);
-	ASSERT_NO_THROW(list.DelFirst());
+	TPolynom t1;
+	t1.AddMonom(1, 2, 2, 2);
+	t1.AddMonom(3, 0, 0, 2);
 
+	TPolynom t2;
+	t2.AddMonom(1, 2, 2, 1);
+	t2.AddMonom(-2, 0, 0, 2);
+	t2.AddMonom(1, 0, 0, 1);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolynom sum;
+	ASSERT_NO_THROW(sum = t1 + t2);
+
+	std::cout << "\t     t1 + t2 = " << sum << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(1, 2, 2, 2);
+	correct.AddMonom(1, 2, 2, 1);
+	correct.AddMonom(1, 0, 0, 2);
+	correct.AddMonom(1, 0, 0, 1);
+
+	EXPECT_EQ(sum, correct);
 }
 
-TEST(TList, CAN_INSERT_LAST)
+TEST(TPolynom, CanSubstractPolynomFromPolynom)
 {
-	TList<int> list;
-	list.InsFirst(1);
-	ASSERT_NO_THROW(list.InsLast(2));
+	TPolynom t1;
+	t1.AddMonom(1, 0, 1, 1);
+	t1.AddMonom(2, 1, 0, 1);
+	t1.AddMonom(3, 1, 1, 1);
 
+	TPolynom t2;
+	t2.AddMonom(1, 0, 1, 1);
+	t2.AddMonom(-2, 1, 0, 1);
+	t2.AddMonom(3, 1, 1, 1);
+
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
+
+	TPolynom difference;
+	ASSERT_NO_THROW(difference = t1 - t2);
+
+	std::cout << "\t     t1 - t2 = " << difference << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(4, 1, 0, 1);
+
+	EXPECT_EQ(difference, correct);
 }
 
-TEST(TList, CAN_INSERT_WHEN_ELEMENT_FIRST)
+TEST(TPolynom, CanMultiplyPolynomByZeroDouble)
 {
-	TList<int> list;
-	list.InsFirst(1); list.InsFirst(2);
-	list.InsFirst(3); list.InsFirst(4);
-	list.Reset();
-	ASSERT_NO_THROW(list.InsCuer(100));
+	TPolynom t;
+	t.AddMonom(1, 0, 1, 1);
+	t.AddMonom(2, 1, 0, 1);
+	t.AddMonom(3, 1, 1, 1);
 
+	std::cout << "\t     t = " << t << '\n';
+
+	TPolynom result;
+	ASSERT_NO_THROW(result = 0 * t);
+
+	std::cout << "\t     0 * t = " << result << '\n';
+
+	EXPECT_EQ(result, TPolynom());
 }
 
-TEST(TList, CAN_INSERT_ELEMENT_WHEN_SECOND)
+TEST(TPolynom, CanMultiplyPolynomByDouble)
 {
-	TList<int> list;
-	list.InsFirst(1); list.InsFirst(2);
-	list.InsFirst(3); list.InsFirst(4);
-	list.Reset(); list.GoNext();
-	ASSERT_NO_THROW(list.InsCuer(100));
+	TPolynom t;
+	t.AddMonom(1, 0, 1, 1);
+	t.AddMonom(2, 1, 0, 1);
+	t.AddMonom(3, 1, 1, 1);
 
+	TPolynom result;
+	ASSERT_NO_THROW(result = -10 * t);
+
+	std::cout << "\t     t = " << t << '\n';
+	std::cout << "\t     (-10) * t = " << result << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(-10, 0, 1, 1);
+	correct.AddMonom(-20, 1, 0, 1);
+	correct.AddMonom(-30, 1, 1, 1);
+
+	EXPECT_EQ(result, correct);
 }
 
-TEST(TList, CAN_DELETE_ELEMENT_WHEN_SECOND)
+TEST(TPolynom, CanMultiplyPolynomByMonom)
 {
-	TList<int> list;
-	list.InsLast(1); list.InsLast(2);
-	list.InsLast(3); list.InsLast(4);
+	TPolynom t;
+	t.AddMonom(1, 0, 1, 0);
+	t.AddMonom(1, 1, 0, 0);
 
-	list.Reset();
-	list.GoNext();
-	ASSERT_NO_THROW(list.DelCuer());
+	TMonom m(2, 1, 0, 1);
+
+	std::cout << "\t     t = " << t << '\n';
+
+	TPolynom result;
+	ASSERT_NO_THROW(result = t * m);
+
+	std::cout << "\t     t * 2*xz = " << result << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(2, 2, 0, 1);
+	correct.AddMonom(2, 1, 1, 1);
+
+	EXPECT_EQ(result, correct);
 }
 
-TEST(TList, CAN_INSERT_ELEMENT_WHEN_LAST)
+TEST(TPolynom, CanMultiplyPolynomByPolynom)
 {
-	TList<int> list;
-	list.InsLast(1); list.InsLast(2);
-	list.InsLast(3); list.InsLast(4);
+	TPolynom t1;
+	t1.AddMonom(1, 1, 0, 0);
 
-	list.Reset();
-	list.GoNext(); list.GoNext();
-	list.GoNext(); list.GoNext();
-	ASSERT_NO_THROW(list.InsCuer(100));
-}
+	TPolynom t2;
+	t2.AddMonom(2, 0, 1, 1);
+	t2.AddMonom(0.5, 0, 0, 1);
 
-TEST(TList, TList_CAN_DELETE_ELEMENT_WHEN_LAST)
-{
-	TList<int> list;
-	list.InsLast(1); list.InsLast(2);
-	list.InsLast(3); list.InsLast(4);
+	std::cout << "\t     t1 = " << t1 << '\n';
+	std::cout << "\t     t2 = " << t2 << '\n';
 
-	list.Reset();
-	list.GoNext(); list.GoNext();
-	list.GoNext();
-	ASSERT_NO_THROW(list.DelCuer());
+	TPolynom result;
+	ASSERT_NO_THROW(result = t1 * t2);
+
+	std::cout << "\t     t1 * t2 = " << result << '\n';
+
+	TPolynom correct;
+	correct.AddMonom(2, 1, 1, 1);
+	correct.AddMonom(0.5, 1, 0, 1);
+
+	EXPECT_EQ(result, correct);
 }

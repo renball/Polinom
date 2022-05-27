@@ -16,6 +16,7 @@ public:
 	~TList();
 
 	bool IsEmpty();
+	bool IsNotEmpty();
 	void InsFirst(T value);
 	void InsLast(T value);
 	void InsCuer(T value);
@@ -30,6 +31,7 @@ public:
 
 };
 
+//Конструктор по умолчанию
 template<class T>
 TList<T>::TList()
 {
@@ -37,7 +39,7 @@ TList<T>::TList()
 	pFirst = pCuer = pPrev = pLast = pStop;
 	len = 0;
 }
-
+//Деструктор
 template<class T>
 TList<T>::~TList()
 {
@@ -51,12 +53,20 @@ TList<T>::~TList()
 	len = 0;
 }
 
+//Проверки на (не) пустоту списка
 template<class T>
 bool TList<T>::IsEmpty()
 {
 	return pFirst == nullptr;
 }
 
+template<class T>
+bool TList<T>::IsNotEmpty()
+{
+	return pFirst != nullptr;
+}
+
+//Добавление элемента в начало, в конец и в определённое место списка
 template<class T>
 void TList<T>::InsFirst(T value)
 {
@@ -111,7 +121,7 @@ void TList<T>::InsCuer(T value)
 		len++;
 	}
 }
-
+//Удаление с начала и из определённого места списка
 template<class T>
 void TList<T>::DelFirst()
 {
@@ -156,26 +166,26 @@ void TList<T>::DelCuer()
 		len--;
 	}
 }
-
+//Движение дальше по списку на следующее звено
 template<class T>
 void TList<T>::GoNext()
 {
 	pPrev = pCuer;
 	pCuer = pCuer->pNext;
 }
-
+//Проверка пришли ли в конец списка
 template<class T>
 bool TList<T>::IsEnd()
 {
 	return pCuer == pStop;
 }
-
+//Получить значение данного звена
 template<class T>
 T TList<T>::GetCuer()
 {
 	return pCuer->val;
 }
-
+//Сброс к самому началу
 template<class T>
 void TList<T>::Reset()
 {
@@ -184,7 +194,7 @@ void TList<T>::Reset()
 }
 
 ///////////////////		THEADLIST		////////////////////////////
-
+//Самый первый элемент
 template <class T>
 class THeadList : public TList<T>
 {

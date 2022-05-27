@@ -38,6 +38,7 @@ public:
 	}
 };
 
+//вывод полинома
 void TPolinom::Print(std::ostream& os) const
 {
 	TNode<TMonom>* _pCurr = pFirst;
@@ -87,6 +88,7 @@ void TPolinom::Print(std::ostream& os) const
 		}
 	}
 }
+//конструктор
 TPolinom::TPolinom()
 {
 	TMonom m(0, 0, -1);

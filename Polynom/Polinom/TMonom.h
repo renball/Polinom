@@ -16,10 +16,11 @@ struct TNode
 
 struct TMonom
 {
+	//коэффициент и степени
 	double coeff;
 	int x, y, z;
 
-
+	//Конструктор
 	TMonom(double _coeff = 0, int _x = 0, int _y = 0, int _z = 0)
 	{
 		coeff = _coeff;
@@ -27,11 +28,14 @@ struct TMonom
 		y = _y;
 		z = _z;
 	}
+
+	//проверка на то что данный момном свободный член
 	bool IsConst() const
 	{
 		return x == 0 && y == 0 && z == 0;
 	}
-
+	
+	//Операторы сравнения степеней
 	bool operator==(const TMonom& mon)
 	{
 		return (x == mon.x) && (y == mon.y) && (z == mon.z);
@@ -57,8 +61,15 @@ struct TMonom
 		else
 			return false;
 	}
+
+	//для вывод монома
 	friend std::ostream& operator<<(std::ostream& os, TMonom& mon)
-	{
+	{	
+		/* По хорошему бы реализовать ещё вывод коэффициента монома
+		if (mon.coeff != 1) {
+			os << mon.coeff;
+		}
+		*/ 
 		if (mon.x != 0)
 		{
 			os << "x";
@@ -79,6 +90,8 @@ struct TMonom
 		}
 		return os;
 	}
+
+	//оператор умножения монома на моном
 	TMonom operator*(const TMonom& mon)
 	{
 		TMonom res;

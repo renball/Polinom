@@ -9,10 +9,10 @@ void main()
 	setlocale(LC_ALL, "Russian");
 	TPolinom tp1, tp2;
 	int n1, n2;
-	cout << "Число мономов: ";
+	cout << "Количество мономов в первом полиноме: \n";
 
 	cin >> n1;
-	cout << "\n Введите степени и коэф монома: ";
+	cout << "Коэффициент какждого монома и его степени при x, y, z: \n";
 	for (int i = 0; i < n1; i++)
 	{
 		double coeff;
@@ -22,25 +22,31 @@ void main()
 
 	    tp1.AddMonom(tm);
 	}
-
-	cout << "Итак, полином: " << tp1 << endl;
+	
+	cout << "Первый полином: \n" << tp1 << endl;
 	
 	int k;
-	cout << "Введите число для умножения: ";
+	cout << "Умножить полином на число: ";
 	cin >> k;
-	cout << "Умножение полининома на " << k << " : " << tp1 * k << endl;
+	cout << k << " * (" << tp1 <<")"<< endl << "="<<endl;
+	tp1 = tp1 * k;
+	cout << tp1 << endl;
 
-	cout << "Введите параметры монома: ";
+	cout << "Ввод коэффициента и степеней для генерации следующего монома: \n";
 	double coeff1;
 	int x1, y1, z1;
 	cin >> coeff1 >> x1 >> y1 >> z1 ;
 	TMonom tm(coeff1, x1, y1, z1);
 
-	cout << "Умножение полинома на моном: " << tp1 * tm << endl;
-	
-	cout << "Введите второй полином. Число мономов в нем: ";
+	cout << "Умножение полинома на моном: \n";
+	cout <<"("<< tp1 << ") * " <<tm.coeff <<"*"<< tm << endl;
+	tp1 = tp1 * tm ;
+	cout << tp1 << endl;
+
+	cout << "Ввод количества мономов для второго полинома: \n";
 	cin >> n2;
-	cout << "\nВведите степени и коэф полинома №2: \n";
+
+	cout << "Ввод коэффициентов и степеней при x, y, z для второго полинома: \n";
 	for (int i = 0; i < n2; i++)
 	{
 		double coeff;
@@ -49,9 +55,13 @@ void main()
 		TMonom tm(coeff, x, y, z);
 		tp2.AddMonom(tm);
 	}
-	
-	cout << "Второй полином: " << tp2 << endl;
-	cout << "Сумма двух полиносов: " << tp1 + tp2 << endl;
+	cout << endl;
+	cout << "Второй полином: \n" << tp2 << endl << endl;
 
-	cout << "Произведение:" << tp1 * tp2 << endl;
+	cout << "Сумма двух полиномов: \n" <<tp1<<endl<<"+"<<endl<<tp2<< endl;
+	tp1 = tp1 + tp2;
+	cout << "=" << endl << tp1<<endl<<endl;
+	cout << "Произведение:\n" << tp1 << endl << "*" << endl << tp2 << endl;
+	tp1 =tp1 * tp2 ;
+	cout << "=\n" << endl << tp1 << endl;
 }
